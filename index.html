@@ -1,1 +1,204 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Offline Assessment</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Prevent root window scrolling so PDF viewports can manage inner scrolling */
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+      background-color: #0f172a; /* Slate 900 */
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    /* Header height constraint between 15px - 25px */
+    header {
+      height: 22px;
+    }
+
+    /* Footer height constraint under 15px */
+    footer {
+      height: 12px;
+    }
+
+    /* PDF container calculation taking header (22px) and footer (12px) + gaps into account */
+    .main-viewport {
+      height: calc(100vh - 22px - 12px - 16px);
+    }
+  </style>
+</head>
+<body class="flex flex-col text-slate-200">
+
+  <!-- Top Header Space (22px high) -->
+  <header class="w-full bg-slate-950 border-b border-slate-800 px-4 flex items-center justify-between text-[11px] font-medium tracking-wide text-slate-400 select-none">
+    <!-- <div class="flex items-center gap-2">
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span>Dual PDF Document Workspace</span> 
+    </div>
+    <div class="flex items-center gap-3 text-[10px]">
+      <button onclick="toggleConfigModal()" class="hover:text-emerald-400 transition-colors">⚙️ Load Custom PDF URLs</button>
+      <span class="text-slate-600">|</span>
+      <span>Status: Active Session</span>
+    </div>  -->
+  </header>
+
+  <!-- Main Side-by-Side Container -->
+  <main class="main-viewport w-full p-2 flex gap-3 box-border">
+    
+    <!-- Left Section (~70% width) -->
+    <section class="w-[70%] h-full flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl transition-all">
+      <!-- Title Bar -->
+      <div class="px-4 py-2 bg-slate-800/80 border-b border-slate-700/60 flex items-center justify-between">
+        <h5 class="text-sm font-semibold text-slate-100 tracking-tight flex items-center gap-2">
+          <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+            Real Time SS from 
+            Client Apps connected to
+            Firebase Backend
+        </h5>
+        <!-- <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">70% Width</span> -->
+      </div>
+
+      <!-- Scrollable PDF Frame Container -->
+      <div class="flex-1 w-full bg-slate-950 relative">
+        <iframe 
+          id="left-pdf-frame"
+          class="w-full h-full border-none"
+          src="https://drive.google.com/file/d/1JiduoWt-MA3-Gnd87mz3D7TQduhLQ-TV/preview" 
+          type="application/pdf">
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Right Section (~30% width) -->
+    <section class="w-[30%] h-full flex flex-col bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-2xl transition-all">
+      <!-- Title Bar -->
+      <div class="px-4 py-2 bg-slate-800/80 border-b border-slate-700/60 flex items-center justify-between">
+        <h5 class="text-sm font-semibold text-slate-100 tracking-tight flex items-center gap-2">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
+          </svg>
+             Proof of Acceptance in 6th international Conference at Madurai, Tamil Nadu, India
+        </h5>
+        <!-- <span class="text-[11px] bg-sky-500/10 text-sky-400 border border-sky-500/20 px-2 py-0.5 rounded-full font-mono">30% Width</span> -->
+      </div>
+
+      <!-- Scrollable PDF Frame Container -->
+      <div class="flex-1 w-full bg-slate-950 relative">
+        <iframe 
+          id="right-pdf-frame"
+          class="w-full h-full border-none"
+          src="https://drive.google.com/file/d/1Hv6Zr4HNxgrhk9QN9IwYLC7b8-bTCXV-/preview" 
+          type="application/pdf">
+        </iframe>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating License Warning Overlay -->
+  <div id="license-warning" class="fixed top-8 left-[12.5%] w-[35%] h-[20vh] bg-slate-950/95 backdrop-blur-md border border-amber-500/40 rounded-xl shadow-2xl p-4 z-50 flex flex-col justify-between transition-all">
+    <div class="flex items-start gap-3">
+      <div class="p-2 bg-amber-500/10 rounded-lg text-amber-400 flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+      </div>
+      <div>
+        <h6 class="text-xs font-bold text-amber-400 tracking-wide uppercase">Licensed Content Warning</h6>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          This workspace displays proprietary document materials. Reproduction, redistribution, or unauthorized extraction is strictly forbidden under copyright laws.
+        </p>
+      </div>
+    </div>
+    <div class="flex justify-end">
+      <button onclick="closeWarning()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-4 py-1.5 rounded-lg transition-colors shadow-md">
+        Got it
+      </button>
+    </div>
+  </div>
+
+  <!-- URL Configuration Modal
+  <div id="config-modal" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-lg p-6 shadow-2xl space-y-4">
+      <h3 class="text-base font-semibold text-slate-100 flex items-center gap-2">
+        <span>⚙️</span> Update PDF Viewport URLs
+      </h3>
+      <p class="text-xs text-slate-400">
+        Paste Google Drive share links (standard `/view` links will auto-convert to `/preview`) or direct web PDF links.
+      </p>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">Left PDF URL (70% Pane)</label>
+          <input id="input-left-url" type="text" placeholder="https://drive.google.com/file/d/.../view" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">Right PDF URL (30% Pane)</label>
+          <input id="input-right-url" type="text" placeholder="https://drive.google.com/file/d/.../view" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-sky-500">
+        </div>
+      </div>
+
+      <div class="flex justify-end gap-2 pt-2">
+        <button onclick="toggleConfigModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-lg transition-colors">Cancel</button>
+        <button onclick="applyPdfUrls()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg transition-colors">Apply Links</button>
+      </div>
+    </div>
+  </div> -->
+
+  <!-- Bottom Footer Space (12px high) -->
+  <footer class="w-full bg-slate-950 border-t border-slate-800/60 px-4 flex items-center justify-between text-[9px] text-slate-500 select-none">
+    <!-- <span>© Document Workspace System</span> -->
+    <!-- <span>Privacy Notice & Terms</span> -->
+  </footer>
+
+  <script>
+    // Close the warning banner
+    function closeWarning() {
+      const banner = document.getElementById('license-warning');
+      banner.style.opacity = '0';
+      banner.style.transform = 'translateY(-10px)';
+      setTimeout(() => banner.style.display = 'none', 200);
+    }
+
+    // Toggle configuration modal
+    function toggleConfigModal() {
+      const modal = document.getElementById('config-modal');
+      modal.classList.toggle('hidden');
+    }
+
+    // Convert standard Google Drive link format to iframe-compatible preview URL
+    function formatDriveUrl(url) {
+      if (!url) return '';
+      let formatted = url.trim();
+      if (formatted.includes('drive.google.com') && formatted.includes('/view')) {
+        formatted = formatted.replace(/\/view(\?.*)?$/, '/preview');
+      }
+      return formatted;
+    }
+
+    // Apply updated URLs from modal inputs
+    function applyPdfUrls() {
+      const leftInput = document.getElementById('input-left-url').value;
+      const rightInput = document.getElementById('input-right-url').value;
+
+      if (leftInput) {
+        document.getElementById('left-pdf-frame').src = formatDriveUrl(leftInput);
+      }
+      if (rightInput) {
+        document.getElementById('right-pdf-frame').src = formatDriveUrl(rightInput);
+      }
+
+      toggleConfigModal();
+    }
+  </script>
+</body>
+</html>
