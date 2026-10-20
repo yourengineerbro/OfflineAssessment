@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,10 +37,12 @@
 
   <!-- Top Header Space (22px high) -->
   <header class="w-full bg-slate-950 border-b border-slate-800 px-4 flex items-center justify-between text-[11px] font-medium tracking-wide text-slate-400 select-none">
-    <!-- <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2">
       <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-      <span>Dual PDF Document Workspace</span> 
+      <span>GenAI Generated 2026</span>
+      <!-- <span>Dual PDF Document Workspace</span>  -->
     </div>
+     <!--
     <div class="flex items-center gap-3 text-[10px]">
       <button onclick="toggleConfigModal()" class="hover:text-emerald-400 transition-colors">⚙️ Load Custom PDF URLs</button>
       <span class="text-slate-600">|</span>
@@ -68,14 +69,41 @@
       </div>
 
       <!-- Scrollable PDF Frame Container -->
-      <div class="flex-1 w-full bg-slate-950 relative">
+      <!-- <div class="flex-1 w-full bg-slate-950 relative">
+        
+        <button id="view-pdf-button" > Click here to view the SS PDF </button>
+
         <iframe 
           id="left-pdf-frame"
           class="w-full h-full border-none"
+          style="display: none;"
           src="https://drive.google.com/file/d/1JiduoWt-MA3-Gnd87mz3D7TQduhLQ-TV/preview" 
           type="application/pdf">
         </iframe>
       </div>
+       -->
+
+       <div class="flex-1 w-full bg-slate-950 relative flex items-center justify-center">
+  
+  <!-- Centered & Styled Button -->
+  <button 
+    id="view-pdf-button" 
+    class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg shadow-lg hover:shadow-indigo-500/30 transition-all duration-200 cursor-pointer border border-indigo-400/30 active:scale-95"
+    onclick="showPdfFrame()"
+  >
+    Click here to view the SS PDF
+  </button>
+
+  <!-- Embedded PDF Frame -->
+  <iframe 
+    id="left-pdf-frame"
+    class="w-full h-full border-none hidden"
+    src="https://drive.google.com/file/d/1JiduoWt-MA3-Gnd87mz3D7TQduhLQ-TV/preview" 
+    type="application/pdf"
+  >
+  </iframe>
+
+</div>
     </section>
 
     <!-- Right Section (~30% width) -->
@@ -162,6 +190,18 @@
 
   <script>
     // Close the warning banner
+    function showPdfFrame() {
+    const button = document.getElementById('view-pdf-button');
+    const iframe = document.getElementById('left-pdf-frame');
+    
+    // Hide the button
+    button.style.display = 'none';
+    
+    // Display the PDF iframe
+    iframe.classList.remove('hidden');
+    iframe.style.display = 'block';
+   }
+
     function closeWarning() {
       const banner = document.getElementById('license-warning');
       banner.style.opacity = '0';
